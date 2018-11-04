@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
+import Lomakkeet from './Components/Lomakkeet.js'
+import Filtteri from './Components/Filtteri.js'
 
 class App extends React.Component {
   constructor(props) {
@@ -16,7 +18,7 @@ class App extends React.Component {
       etsittava: ''
     }
   }
-  lisaaHenkilo = async (event) => {
+  lisaaHenkilo = (event) => {
     event.preventDefault()
     const uusiNimi = {
         name: this.state.newName,
@@ -25,7 +27,7 @@ class App extends React.Component {
     }
     const olemassa = (verrattava) => this.state.persons.filter(nimi => nimi.name.toLowerCase() === verrattava.toLowerCase()).length
     const tarkistus = olemassa(uusiNimi.name)
-    if(await tarkistus > 0) {
+    if(tarkistus > 0) {
         alert('Nimi on jo olemassa')
     } else {
         const nimet = this.state.persons.concat(uusiNimi)
@@ -37,6 +39,7 @@ class App extends React.Component {
     }
     
   }
+
   handleNameChange = (event) => {
     this.setState({ newName: event.target.value })
   }
@@ -44,43 +47,16 @@ class App extends React.Component {
     this.setState({ newNumber: event.target.value })
   }
   handleEtsittavaChange = (event) => {
-      console.log(event.target.value)
     this.setState({ etsittava: event.target.value })
   }
-
   render() {
     const nimet = this.state.persons.filter(i => i.name.toLowerCase().indexOf(this.state.etsittava.toLowerCase()) > -1)
-    console.log(nimet)
     const esita = () => nimet.map(nimi => <li key={nimi.id}>{nimi.name} {nimi.number}</li>)
     return (
       <div>
-        <h2>Puhelinluettelo</h2>
-        <form >
-          <div>
-            Rajaa näytettäviä: <input 
-            value={this.state.etsittava}
-            onChange={this.handleEtsittavaChange}
-            placeholder="Syötä nimi"
-            />
-          </div>
-        </form>
-        <h2>Lisää uusi</h2>
+        <Filtteri etsittava={this.state.etsittava} handleEtsittavaChange={this.handleEtsittavaChange} />
         <form onSubmit={this.lisaaHenkilo}>
-          <div>
-            nimi: <input 
-            value={this.state.newName}
-            onChange={this.handleNameChange}
-            placeholder="Syötä nimi"
-            />
-          </div>
-          puhelinnumero: <input 
-            value={this.state.newNumber}
-            onChange={this.handleNumberChange}
-            placeholder="Syötä numero"
-            />
-          <div>
-            <button type="submit">lisää</button>
-          </div>
+            <Lomakkeet newName={this.state.newName} newNumber={this.state.newNumber} handleNameChange={this.handleNameChange} handleNumberChange={this.handleNumberChange} />
         </form>
         <h2>Numerot</h2>
         <ul>

@@ -1,5 +1,6 @@
-import React from 'react';
+import React from 'react'
 import ReactDOM from 'react-dom'
+import personsService from './services/persons.js'
 import Lomakkeet from './Components/Lomakkeet.js'
 import Filtteri from './Components/Filtteri.js'
 
@@ -7,18 +8,13 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      persons: [
-        { id: 1, name: 'Arto Hellas', number: '040-123456' },
-        { id: 2,name: 'Martti Tienari', number: '040-123456' },
-        { id: 3,name: 'Arto Järvinen', number: '040-123456' },
-        { id: 4,name: 'Lea Kutvonen', number: '040-123456' }
-      ],
+      persons: [],
       newName: '',
       newNumber: '',
       etsittava: ''
     }
   }
-  lisaaHenkilo = (event) => {
+  lisaaHenkilo = async (event) => {
     event.preventDefault()
     const uusiNimi = {
         name: this.state.newName,
@@ -31,11 +27,26 @@ class App extends React.Component {
         alert('Nimi on jo olemassa')
     } else {
         const nimet = this.state.persons.concat(uusiNimi)
+        await personsService.create(uusiNimi)
         this.setState({
         persons: nimet,
         newName: '',
         newNumber: ''
     })
+    }
+    
+  }
+  poistaHenkilo = async (poistettava) => {
+    const henkilo = this.state.persons.filter(i => i.id === poistettava)
+    if (window.confirm(`Poistetaanko ${henkilo[0].name}`)) {
+    await personsService.del(poistettava)
+    let henkilot = this.state.persons
+    henkilot.splice(henkilot.findIndex((i) => i[0] === poistettava), 1)
+      this.setState({
+      persons: henkilot,
+      })
+    } else {
+      alert('Ei poistettu')
     }
     
   }
@@ -49,9 +60,14 @@ class App extends React.Component {
   handleEtsittavaChange = (event) => {
     this.setState({ etsittava: event.target.value })
   }
+
+  async componentDidMount() {
+    const res = await personsService.getAll()
+    this.setState({ persons: res.data })
+  }
   render() {
     const nimet = this.state.persons.filter(i => i.name.toLowerCase().indexOf(this.state.etsittava.toLowerCase()) > -1)
-    const esita = () => nimet.map(nimi => <li key={nimi.id}>{nimi.name} {nimi.number}</li>)
+    const esita = () => nimet.map(nimi => <li key={nimi.id}>{nimi.name} {nimi.number} <button onClick={() => this.poistaHenkilo(nimi.id)} type="submit">poista</button></li>)
     return (
       <div>
         <Filtteri etsittava={this.state.etsittava} handleEtsittavaChange={this.handleEtsittavaChange} />

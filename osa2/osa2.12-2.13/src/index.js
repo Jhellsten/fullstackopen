@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import countriesService from './services/countries.js'
 import Filtteri from './Components/Filtteri.js'
+import './index.css'
 
 class App extends React.Component {
   constructor(props) {
@@ -36,17 +37,17 @@ class App extends React.Component {
     const esita = () => maat.map(maa => <li value={maa.nimi} onClick={() => this.handleChangeEtsittava(maa.name)} key={maa.numericCode}>{maa.name}  {maa.number} </li>)
     const yksiMaa = () => maat.map(maa => <ul key={maa.numericCode}><li><h2>{maa.name}</h2></li><li>Capital: {maa.capital}</li><li>Population: {maa.population}</li><img src={maa.flag} alt={maa.name}></img></ul>)
     if(esita().length === 1) {
-        return (
-            <div>
-              <Filtteri etsittava={this.state.etsittava} handleEtsittavaChange={this.handleEtsittavaChange} esita={esita()} />
-              <h2>Maat</h2>
-              <ul>
-                  {yksiMaa()} 
-              </ul>
-            </div>
-          )
+      return (
+        <div>
+          <Filtteri etsittava={this.state.etsittava} handleEtsittavaChange={this.handleEtsittavaChange} esita={esita()} />
+          <h2>Maat</h2>
+          <ul>
+              {yksiMaa()} 
+          </ul>
+        </div>
+      )
     } else {
-        return (
+      return (
         <div>
             <Filtteri etsittava={this.state.etsittava} handleEtsittavaChange={this.handleEtsittavaChange} esita={esita()} />
             <h2>Maat</h2>
@@ -54,7 +55,7 @@ class App extends React.Component {
                 {esita()} 
             </ul>
         </div>
-        )
+        ) 
     }
   }
 }

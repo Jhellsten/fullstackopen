@@ -1,19 +1,51 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/persons'
 
-const getAll = () => {
-  return axios.get(baseUrl)
+const getAll = async () => {
+  try {
+    const res = await axios.get(baseUrl)
+    return res
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
-const create = (newObject) => {
-  return axios.post(baseUrl, newObject)
+const create = async (newObject) => {
+  try {
+    const res = await axios.post(baseUrl, newObject)
+    if(!res) {
+      return 'Error'
+    }
+    return res
+  } catch (error) {
+    throw new Error(error)
+  }
+  
 }
 
-const update = (id, newObject) => {
-  return axios.put(`${baseUrl}/${id}`, newObject)
+const update = async (id, newObject) => {
+  try {
+    const res = await axios.put(`${baseUrl}/${id}`, newObject)
+    if(!res){
+      return 'Error'
+    }
+    return res
+  } catch (error) {
+    throw new Error(error)
+  }
+  
 }
-const del = (id, newObject) => {
-  return axios.delete(`${baseUrl}/${id}`, newObject)
+const del = async (id, newObject) => {
+  try {
+    const res = await axios.delete(`${baseUrl}/${id}`, newObject)
+    if(!res) {
+      return 'Error'
+    }
+    return res
+  } catch (error) {
+    throw new Error(error)
+  }
+  
 }
 
 export default { getAll, create, update, del }
